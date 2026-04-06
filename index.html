@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Time Manager</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ░░░ DYNAMIC BACKGROUND ░░░ -->
+  <div id="bg-layer"></div>
+  <div class="bg-overlay"></div>
+
+  <!-- ░░░ SCREEN 1: WELCOME ░░░ -->
+  <div class="screen" id="screen-welcome">
+    <!-- Language toggle top right -->
+    <div style="position:absolute;top:1.5rem;right:1.5rem;z-index:30">
+      <button class="lang-btn" id="btn-lang">🌐 <span id="lang-label">ES</span></button>
+    </div>
+    <div class="welcome-content">
+      <div class="welcome-icon">
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+          <circle cx="24" cy="24" r="22" stroke="currentColor" stroke-width="2" opacity="0.3"/>
+          <path d="M24 12v12l7 4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h1 class="welcome-title">Good <span id="greeting-time">morning</span>.</h1>
+      <p class="welcome-subtitle" data-i18n="welcome-sub">Let's make the most of your time today.</p>
+      <button class="btn-cta" id="btn-start" data-i18n="btn-start">Start Planning</button>
+    </div>
+  </div>
+
+  <!-- ░░░ SCREEN 2: TIME SELECTION ░░░ -->
+  <div class="screen hidden" id="screen-time">
+    <div class="time-selection-content">
+      <p class="step-label" data-i18n="step-label">Step 1 of 2</p>
+      <h2 class="screen-title" data-i18n="screen-title">When does your day end?</h2>
+      <p class="screen-sub" data-i18n="screen-sub">We'll use this to calculate your remaining time.</p>
+
+      <div class="time-picker-card glass">
+        <div class="time-display-row">
+          <div class="time-field">
+            <label data-i18n="label-hour">Hour</label>
+            <div class="time-spinner">
+              <button class="spin-btn" id="hour-up">▲</button>
+              <span id="hour-display" class="time-val">22</span>
+              <button class="spin-btn" id="hour-down">▼</button>
+            </div>
+          </div>
+          <span class="time-colon">:</span>
+          <div class="time-field">
+            <label data-i18n="label-min">Minute</label>
+            <div class="time-spinner">
+              <button class="spin-btn" id="min-up">▲</button>
+              <span id="min-display" class="time-val">00</span>
+              <button class="spin-btn" id="min-down">▼</button>
+            </div>
+          </div>
+        </div>
+        <div class="time-presets">
+          <span class="preset-label" data-i18n="quick-pick">Quick pick</span>
+          <div class="preset-row">
+            <button class="preset-btn" data-hour="20" data-min="0">8 PM</button>
+            <button class="preset-btn" data-hour="21" data-min="0">9 PM</button>
+            <button class="preset-btn active" data-hour="22" data-min="0">10 PM</button>
+            <button class="preset-btn" data-hour="23" data-min="0">11 PM</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-row">
+        <button class="btn-back" id="btn-back-time" data-i18n="btn-back">← Back</button>
+        <button class="btn-cta" id="btn-confirm-time" data-i18n="btn-continue">Continue →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ░░░ SCREEN 3: PLANNING ░░░ -->
+  <div class="screen hidden" id="screen-plan">
+    <!-- Top Bar -->
+    <div class="plan-topbar">
+      <button class="icon-pill" id="btn-back-plan" title="Back">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      </button>
+      <div class="topbar-right">
+        <button class="lang-btn" id="btn-lang-plan">🌐 <span id="lang-label-plan">ES</span></button>
+        <button class="icon-pill" id="btn-sound" title="Toggle Sound">
+          <svg id="sound-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+          </svg>
+        </button>
+        <button class="icon-pill" id="btn-insights" title="Insights">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Hero: Remaining Time -->
+    <div class="plan-hero glass">
+      <p class="hero-eyebrow" data-i18n="hero-eyebrow">YOU HAVE EXACTLY</p>
+      <h1 class="hero-time" id="hero-time-display">--h --m</h1>
+      <p class="hero-cutoff">
+        <span data-i18n="until-ends">until your day ends at</span>
+        <span class="cutoff-badge" id="cutoff-badge-text">22:00</span>
+        <button class="inline-edit-btn" id="btn-edit-cutoff" data-i18n="btn-edit">Edit</button>
+      </p>
+      <p class="hero-message" id="hero-message">Calculating...</p>
+    </div>
+
+    <!-- Add Activity -->
+    <div class="add-activity-card glass">
+      <p class="card-label" data-i18n="card-label">What do you want to do with it?</p>
+      <div class="add-row">
+        <input type="text" id="task-name-input" class="task-input" data-i18n-ph="task-ph" placeholder="E.g. Deep work, Read, Exercise..." autocomplete="off" />
+        <div class="dur-group">
+          <input type="number" id="task-dur-input" class="dur-input" placeholder="30" min="1" />
+          <span class="dur-label">m</span>
+        </div>
+        <button class="urgent-dot" id="urgent-toggle" data-i18n-title="urgent-title" title="Mark as Urgent">!</button>
+        <button class="btn-add-task" id="btn-add-task" data-i18n="btn-add">Add</button>
+      </div>
+      <div class="quick-row">
+        <span class="quick-label" data-i18n="quick-add">Quick add:</span>
+        <button class="chip" data-name="Reading" data-dur="30">📖 <span data-i18n="chip-read">Reading (30m)</span></button>
+        <button class="chip" data-name="Deep Work" data-dur="90">💻 <span data-i18n="chip-deep">Deep Work (1.5h)</span></button>
+        <button class="chip" data-name="Exercise" data-dur="60">🏃 <span data-i18n="chip-exercise">Exercise (1h)</span></button>
+        <button class="chip urgent-chip" data-name="Admin" data-dur="45" data-urgent="true">📋 <span data-i18n="chip-admin">Admin (45m)</span></button>
+      </div>
+    </div>
+
+    <!-- Timeline / Tasks -->
+    <div class="timeline-section">
+      <div class="timeline-header">
+        <h3 class="timeline-title" data-i18n="timeline-title">Today's Timeline</h3>
+        <span class="timeline-count" id="task-count">0 tasks</span>
+      </div>
+      <div class="timeline-list" id="timeline-list">
+        <div class="empty-state" data-i18n="empty-state">No activities yet. Add one above ↑</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ░░░ INSIGHTS PANEL ░░░ -->
+  <div class="side-panel hidden" id="insights-panel">
+    <div class="panel-head">
+      <h2>Productivity</h2>
+      <button class="icon-pill" id="btn-close-insights">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="panel-body">
+      <div class="day-chips" id="day-chips"></div>
+      <div class="bar-section">
+        <h4 id="bar-date-label">Today</h4>
+        <div class="bar-track">
+          <div class="bar-fill" id="bar-fill"></div>
+        </div>
+        <p class="bar-stat" id="bar-stat">0h 0m focused</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ░░░ EDIT CUTOFF MODAL ░░░ -->
+  <div class="modal-overlay hidden" id="cutoff-modal">
+    <div class="modal-box glass">
+      <h3>Change cutoff time</h3>
+      <input type="time" id="cutoff-input-modal" />
+      <div class="modal-btns">
+        <button class="btn-cancel" id="btn-cutoff-cancel">Cancel</button>
+        <button class="btn-cta small" id="btn-cutoff-save">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>
